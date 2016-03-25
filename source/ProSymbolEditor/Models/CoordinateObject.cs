@@ -1,0 +1,76 @@
+﻿using ArcGIS.Core.Geometry;
+using ArcGIS.Desktop.Framework;
+using ArcGIS.Desktop.Framework.Contracts;
+using CoordinateToolLibrary.Models;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ProSymbolEditor
+{
+    public class CoordinateObject : PropertyChangedBase, IDataErrorInfo
+    {
+        private string _coordinate;
+
+        public MapPoint MapPoint { get; set; }
+        public bool IsValid { get; set; }
+
+        public string Coordinate
+        {
+            get
+            {
+                return _coordinate;
+            }
+            set
+            {
+                _coordinate = value;
+
+                MapPoint point;
+                var coordType = ProSymbolUtilities.GetCoordinateType(_coordinate, out point);
+
+                if (coordType == CoordinateType.Unknown)
+                {
+                    //Error
+                    IsValid = false;
+                    MapPoint = null;
+                }
+                else
+                {
+                    IsValid = true;
+                    MapPoint = point;
+                }
+
+                NotifyPropertyChanged(() => Coordinate);
+            }
+        }
+
+        #region IDataErrorInfo Interface
+
+        public string Error { get; set; }
+
+        public string this[string columnName]
+        {
+            get
+            {
+                Error = null;
+
+                switch (columnName)
+                {
+                    case "Coordinate":
+                        if (!IsValid)
+                        {
+                            Error = "The coordinates are invalid";
+                        }
+                        break;
+                }
+
+                return Error;
+            }
+        }
+
+        #endregion
+    }
+}

@@ -1,0 +1,635 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"                                     
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:Controls="clr-namespace:ArcGIS.Desktop.Extensions.Controls;assembly=ArcGIS.Desktop.Extensions" x:Class="ProSymbolEditor.MilitarySymbolDockpaneView"                                             
+             mc:Ignorable="d" d:DesignHeight="430" d:DesignWidth="550">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/ArcGIS.Desktop.Framework;component\Themes\Default.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+
+    <Grid Margin="3,3,3,3">
+
+        <DockPanel>
+
+            <Grid>
+
+                <TabControl x:Name="tabControl" IsEnabled="{Binding IsEnabled}" SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="3,3,3,3">
+                    <TabItem Header="Search">
+
+
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+
+                                <!--<Controls:BurgerButton ToolTip="{Binding BurgerButtonTooltip}" Visibility="Hidden" PopupMenu="{Binding BurgerButtonMenu}" Margin="237,271,244.6,37.4" RenderTransformOrigin="0.448,1.184"/>-->
+
+                                
+                                
+                                    <TextBox x:Name="searchSymbolsTextBox" HorizontalAlignment="Stretch" Height="23" Margin="5,5,5,5" TextWrapping="Wrap" Text="{Binding SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=2000}" Grid.Column="0">
+                                        <TextBox.Style>
+                                            <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                                                <Style.Resources>
+                                                    <VisualBrush x:Key="CueBannerBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
+                                                        <VisualBrush.Visual>
+                                                            <Label Content="Search..." Foreground="DarkGray" />
+                                                        </VisualBrush.Visual>
+                                                    </VisualBrush>
+                                                </Style.Resources>
+                                                <Style.Triggers>
+                                                    <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
+                                                        <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                                                    </Trigger>
+                                                    <Trigger Property="Text" Value="{x:Null}">
+                                                        <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                                                    </Trigger>
+                                                    <Trigger Property="IsKeyboardFocused" Value="True">
+                                                        <Setter Property="Background" Value="White" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBox.Style>
+                                        <!--<TextBox.InputBindings>
+                                            <KeyBinding Command="{Binding SearchResultCommand}" Key="Enter"/>
+                                        </TextBox.InputBindings>-->
+                                    </TextBox>
+                                
+
+                                <!--<Button x:Name="searchStylesButton" Style="{DynamicResource Esri_SimpleButton}" Command="{Binding SearchResultCommand}" Content="Search" Height="24" Width="75" Grid.Column="2"/>-->
+                            </Grid>
+
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <ListBox x:Name="symbolListBox" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="5,5,5,5" ItemsSource="{Binding StyleItems, UpdateSourceTrigger=PropertyChanged}" 
+                                            SelectedItem="{Binding SelectedStyleItem, Mode=TwoWay}" Grid.Column="0" >
+
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <VirtualizingStackPanel>
+                                                <!--Memory footprint is only 200 mb-->
+                                            </VirtualizingStackPanel>
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="2,0" ToolTip="{Binding Name}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="16"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Image Grid.Column="0" Source="{Binding PreviewImage}" Stretch="Fill"/>
+                                                <TextBlock Grid.Column="1" TextAlignment="Left" Text="{Binding Name}" TextTrimming="CharacterEllipsis" Padding="5,1,5,1"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+
+                                <Grid Grid.Column="1" >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Image x:Name="searchTabImage" Source="{Binding SymbolAttributeSet.SymbolImage}" RenderOptions.BitmapScalingMode="HighQuality" Stretch="Uniform" Margin="20,5,20,5" Grid.Row="0" VerticalAlignment="Bottom"/>
+                                    <TextBlock x:Name="styleTagsTextBlock" Text="{Binding SelectedStyleTags, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Row="1"/>
+                                </Grid>
+
+                            </Grid>
+
+                            <Grid Grid.Row="2">
+                                <ToggleButton Name="searchAddToMapButton" Content="Add to Map" IsEnabled="{Binding IsStyleItemSelected}" IsChecked="{Binding AddToMapToolEnabled, UpdateSourceTrigger=PropertyChanged}" Command="{Binding ActivateAddToMapToolCommand}" Height="24" Background="White" BorderBrush="Black" BorderThickness="0.5" ToolTip="Esri_SimpleButton" HorizontalAlignment="Center" Width="90"/>
+                                <Button x:Name="modifyButton" Content="Modify-->" IsEnabled="{Binding IsStyleItemSelected}" Style="{DynamicResource Esri_SimpleButton}" Command="{Binding GoToTabCommand}" CommandParameter="2" ToolTip="Esri_SimpleButton" HorizontalAlignment="Right" Width="75"/>
+
+                            </Grid>
+                        </Grid>
+
+
+                    </TabItem>
+                    <TabItem Header="Favorites" HorizontalAlignment="Stretch" Visibility="Collapsed">
+                        <Grid Background="#FFE5E5E5"/>
+                    </TabItem>
+                    <TabItem Header="Modify" IsEnabled="{Binding IsStyleItemSelected}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Column="0" Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <!-- Identity/Affiliation -->
+
+                                <Label Content="Identity/Affiliation" Margin="5,5,5,5" Grid.Column="0" Grid.Row="0"/>
+                                <ComboBox x:Name="identityComboBox" Margin="5,5,5,5" ItemsSource="{Binding MilitaryFieldsInspectorModel.IdentityDomainValues, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Name" SelectedValuePath="Code" SelectedValue="{Binding SymbolAttributeSet.Identity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Text="Identity" Width="150" Grid.Column="1" Grid.Row="0">
+                                    <ComboBox.Style>
+                                        <Style TargetType="ComboBox"/>
+                                    </ComboBox.Style>
+                                </ComboBox>
+
+                                <!-- Status or Operation -->
+
+                                <Label Grid.Column="0" Grid.Row="1" Margin="5,5,5,5" Content="Status/Planned" Visibility="{Binding ElementName=statusesComboBox, Path=Visibility}"/>
+                                <ComboBox x:Name="statusesComboBox" Margin="5,5,5,5" ItemsSource="{Binding MilitaryFieldsInspectorModel.StatusesDomainValues}" DisplayMemberPath="Name" SelectedValuePath="Code" SelectedValue="{Binding SymbolAttributeSet.Statuses, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" Grid.Column="1" Grid.Row="1">
+                                    <ComboBox.Style>
+                                        <Style TargetType="ComboBox">
+                                            <Style.Triggers>
+                                                <Trigger Property="HasItems" Value="False">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ComboBox.Style>
+                                </ComboBox>
+
+                                <Label Content="Operational Condition Amplifier" Margin="5,5,5,5" Grid.Column="0" Grid.Row="1" Visibility="{Binding ElementName=operationalConditionAmplifierComboBox, Path=Visibility}"/>
+                                <ComboBox x:Name="operationalConditionAmplifierComboBox" Margin="5,5,5,5" ItemsSource="{Binding MilitaryFieldsInspectorModel.OperationalConditionAmplifierDomainValues, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Name" SelectedValuePath="Code" SelectedValue="{Binding SymbolAttributeSet.OperationalCondition, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" Grid.Column="1" Grid.Row="1">
+                                    <ComboBox.Style>
+                                        <Style TargetType="ComboBox">
+                                            <Style.Triggers>
+                                                <Trigger Property="HasItems" Value="False">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ComboBox.Style>
+                                </ComboBox>
+
+                                <!-- TFFDHQ/Indicator -->
+
+                                <Label Content="TF, FD, HQ" Margin="5,5,5,5" Grid.Column="0" Grid.Row="2"/>
+                                <ComboBox x:Name="tfFdHqComboBox" Margin="5,5,5,5" Width="150" Grid.Column="1" Grid.Row="2" ItemsSource="{Binding MilitaryFieldsInspectorModel.TfFdHqDomainValues}" DisplayMemberPath="Name" SelectedValuePath="Code" SelectedValue="{Binding SymbolAttributeSet.Indicator, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    <ComboBox.Style>
+                                        <Style TargetType="ComboBox"/>
+                                    </ComboBox.Style>
+                                </ComboBox>
+
+                                <!-- Echelon or Mobility -->
+
+                                <Label Content="Echelon" Margin="5,5,5,5" Grid.Column="0" Grid.Row="3" Visibility="{Binding ElementName=echelonComboBox, Path=Visibility}"/>
+                                <ComboBox x:Name="echelonComboBox" Margin="5,5,5,5" ItemsSource="{Binding MilitaryFieldsInspectorModel.EcholonsDomainValues}" DisplayMemberPath="Name" SelectedValuePath="Code" SelectedValue="{Binding SymbolAttributeSet.Echelon, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" Grid.Column="1" Grid.Row="3">
+                                    <ComboBox.Style>
+                                        <Style TargetType="ComboBox">
+                                            <Style.Triggers>
+                                                <Trigger Property="HasItems" Value="False">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ComboBox.Style>
+                                </ComboBox>
+
+                                <Label Content="Mobility" Margin="5,5,5,5" Grid.Column="0" Grid.Row="3" Visibility="{Binding ElementName=mobilityComboBox, Path=Visibility}"/>
+                                <ComboBox x:Name="mobilityComboBox" Margin="5,5,5,5" Width="150" Grid.Column="1" Grid.Row="3" ItemsSource="{Binding MilitaryFieldsInspectorModel.MobilityDomainValues}" DisplayMemberPath="Name" SelectedValuePath="Code" SelectedValue="{Binding SymbolAttributeSet.Mobility, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    <ComboBox.Style>
+                                        <Style TargetType="ComboBox">
+                                            <Style.Triggers>
+                                                <Trigger Property="HasItems" Value="False">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ComboBox.Style>
+                                </ComboBox>
+
+                                <Border BorderBrush="Black" Margin="5,5,5,5" BorderThickness="1" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label Content="2525 Delta Only" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
+
+                                        <!-- Identity/Reality/Context -->
+
+                                        <Label Content="Identity/Reality" Margin="5,5,5,5" Grid.Column="0" Grid.Row="1"/>
+                                        <ComboBox x:Name="contextComboBox" Margin="5,5,5,5" Width="150" Grid.Column="1" Grid.Row="1" ItemsSource="{Binding MilitaryFieldsInspectorModel.ContextDomainValues}" DisplayMemberPath="Name" SelectedValuePath="Code" SelectedValue="{Binding SymbolAttributeSet.Context, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                            <ComboBox.Style>
+                                                <Style TargetType="ComboBox"/>
+                                            </ComboBox.Style>
+                                        </ComboBox>
+
+                                        <!-- Modifier 1 -->
+
+                                        <Label Content="Modifier 1" Margin="5,5,5,5" Grid.Column="0" Grid.Row="2"/>
+                                        <ComboBox x:Name="modifier1ComboBox" Margin="5,5,5,5" Width="150" Grid.Column="1" Grid.Row="2" ItemsSource="{Binding MilitaryFieldsInspectorModel.Modifier1DomainValues}" DisplayMemberPath="Name" SelectedValuePath="Code" SelectedValue="{Binding SymbolAttributeSet.Modifier1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                            <ComboBox.Style>
+                                                <Style TargetType="ComboBox"/>
+                                            </ComboBox.Style>
+                                        </ComboBox>
+
+                                        <!-- Modifier 2 -->
+
+                                        <Label Content="Modifier 2" Margin="5,5,5,5" Grid.Column="0" Grid.Row="3"/>
+                                        <ComboBox x:Name="modifier2ComboBox" Margin="5,5,5,5" Width="150" Grid.Column="1" Grid.Row="3" ItemsSource="{Binding MilitaryFieldsInspectorModel.Modifier2DomainValues}" DisplayMemberPath="Name" SelectedValuePath="Code" SelectedValue="{Binding SymbolAttributeSet.Modifier2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                            <ComboBox.Style>
+                                                <Style TargetType="ComboBox"/>
+                                            </ComboBox.Style>
+                                        </ComboBox>
+
+
+
+
+                                    </Grid>
+                                </Border>
+
+
+                                <!-- All Selected Symbol Tags-->
+                                <TextBlock x:Name="selectedSymbolTagsTextBlock" Text="{Binding SymbolAttributeSet.SelectedSymbolTags}" TextWrapping="Wrap" Width="350" VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2" HorizontalAlignment="Left"/>
+
+
+                            </Grid>
+
+                            <!--<Grid Grid.Column="1" Grid.Row="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                -->
+                            <!--<RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />-->
+                            <!--
+                            </Grid.RowDefinitions>
+
+                                                            -->
+                            <!--<TextBlock x:Name="symbolIdCodeTextBlock" Text="{Binding SymbolIdCode, Mode=TwoWay, StringFormat='Symbol ID Code: {0}'}" Width="100" Grid.Row="1"/>
+                            <TextBlock x:Name="selectedSymbolTagsTextBlock" Text="{Binding SymbolAttributeSet.SelectedSymbolTags}" Width="100" Height="100" TextWrapping="Wrap" Grid.Row="2"/>-->
+                            <!--
+                        </Grid>-->
+
+                            <Image x:Name="image" Source="{Binding SymbolAttributeSet.SymbolImage}" RenderOptions.BitmapScalingMode="HighQuality" Stretch="Uniform" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+                            <Grid Grid.Row="1"  Grid.ColumnSpan="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Button Content="&lt;-- Search" Grid.Column="0" Grid.Row="0" Style="{DynamicResource Esri_SimpleButton}" Command="{Binding GoToTabCommand}" CommandParameter="0" HorizontalAlignment="Left" Width="101"/>
+                                <Button Content="Add Favorite" Grid.Column="1" Grid.Row="0" Style="{DynamicResource Esri_SimpleButton}" Command="{Binding GoToTabCommand}" CommandParameter="1" HorizontalAlignment="Center" Width="101" Visibility="Collapsed"/>
+                                <ToggleButton Content="Add to Map" Grid.Column="2" Grid.Row="0" ToolTip="Esri_SimpleButton" Command="{Binding ActivateAddToMapToolCommand}" IsChecked="{Binding AddToMapToolEnabled}" Height="24" Background="White" BorderBrush="Black" BorderThickness="0.5" HorizontalAlignment="Center" Width="101"/>
+                                <Button Content="Text -->" Grid.Column="3" Grid.Row="0" Style="{DynamicResource Esri_SimpleButton}" Command="{Binding GoToTabCommand}" CommandParameter="3" ToolTip="Esri_SimpleButton" HorizontalAlignment="Right" Width="101"/>
+
+                            </Grid>
+           
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Text" IsEnabled="{Binding IsStyleItemSelected}">
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <ScrollViewer>
+                                <Grid Grid.Row="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Grid Grid.Column="0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <Label Content="Date/Time Valid" Grid.Row="0" Visibility="{Binding MilitaryFieldsInspectorModel.DateTimeValidFieldExists}"/>
+                                        <xctk:DateTimePicker Grid.Row="1" Width="170" Value="{Binding SymbolAttributeSet.DateTimeValid}" Format="Custom" FormatString="MMM-dd-yy hh:mm tt" Visibility="{Binding MilitaryFieldsInspectorModel.DateTimeValidFieldExists}"/>
+
+                                        <Label Content="Date/Time Expired" Grid.Row="2" Visibility="{Binding MilitaryFieldsInspectorModel.DateTimeExpiredFieldExists}"/>
+                                        <xctk:DateTimePicker  Grid.Row="3" Width="170" Value="{Binding SymbolAttributeSet.DateTimeExpired}" Format="Custom" FormatString="MMM-dd-yy hh:mm tt" Visibility="{Binding MilitaryFieldsInspectorModel.DateTimeExpiredFieldExists}"/>
+
+                                        <!--<Label Content="Location" Grid.Row="4"/>
+                                        <TextBox Grid.Row="5" Width="170"/>-->
+
+                                        <Label Content="Type" Grid.Row="6" Visibility="{Binding MilitaryFieldsInspectorModel.TypeFieldExists}"/>
+                                        <TextBox Grid.Row="7" Width="170" Text="{Binding SymbolAttributeSet.Type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding MilitaryFieldsInspectorModel.TypeFieldExists}"/>
+
+                                        <Label Content="Common Identifier" Grid.Row="8" Visibility="{Binding MilitaryFieldsInspectorModel.CommonIdentifierFieldExists}"/>
+                                        <TextBox Grid.Row="9" Width="170" Text="{Binding SymbolAttributeSet.CommonIdentifier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding MilitaryFieldsInspectorModel.CommonIdentifierFieldExists}"/>
+
+                                        <Label Content="Speed" Grid.Row="10" Visibility="{Binding MilitaryFieldsInspectorModel.SpeedFieldExists}"/>
+                                        <!--<TextBox Grid.Row="11" Width="170" Text="{Binding SymbolAttributeSet.Speed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding MilitaryFieldsInspectorModel.SpeedFieldExists}"/>-->
+                                        <xctk:ShortUpDown Name="speedUpDown" Grid.Row="11" Width="170" Value="{Binding SymbolAttributeSet.Speed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding MilitaryFieldsInspectorModel.SpeedFieldExists}"/>
+                                    </Grid>
+
+                                    <Image x:Name="textTabSymbolImage" Source="{Binding SymbolAttributeSet.SymbolImage}" MaxHeight="400" RenderOptions.BitmapScalingMode="HighQuality" Stretch="Uniform" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+
+                                    <Grid Grid.Column="2">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <Label Content="Unique Designation" Grid.Row="0" Visibility="{Binding MilitaryFieldsInspectorModel.UniqueDesignationFieldExists}"/>
+                                        <TextBox Grid.Row="1" Width="100" Text="{Binding SymbolAttributeSet.UniqueDesignation}" Visibility="{Binding MilitaryFieldsInspectorModel.UniqueDesignationFieldExists}"/>
+
+                                        <Label Content="Reinforced" Grid.Row="2" Margin="5,5,5,5" Visibility="{Binding ElementName=reinforcedComboBox, Path=Visibility}"/>
+                                        <ComboBox Name="reinforcedComboBox" Grid.Row="3" Margin="5,5,5,5" ItemsSource="{Binding MilitaryFieldsInspectorModel.ReinforcedDomainValues}" DisplayMemberPath="Name" SelectedValuePath="Code" SelectedValue="{Binding SymbolAttributeSet.Reinforced, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150">
+                                            <ComboBox.Style>
+                                                <Style TargetType="ComboBox">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="HasItems" Value="False">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ComboBox.Style>
+                                        </ComboBox>
+
+                                        <Label Content="Staff Comments" Grid.Row="4" Visibility="{Binding MilitaryFieldsInspectorModel.StaffCommentsFieldExists}"/>
+                                        <TextBox Grid.Row="5" Width="100" Text="{Binding SymbolAttributeSet.StaffComments}" Visibility="{Binding MilitaryFieldsInspectorModel.StaffCommentsFieldExists}"/>
+
+                                        <Label Content="Additional Information" Grid.Row="6" Visibility="{Binding MilitaryFieldsInspectorModel.AdditionalInformationFieldExists}"/>
+                                        <TextBox Grid.Row="7" Width="100" Text="{Binding SymbolAttributeSet.AdditionalInformation}" Visibility="{Binding MilitaryFieldsInspectorModel.AdditionalInformationFieldExists}"/>
+
+                                        <Label Content="Higher Formation" Grid.Row="8" Visibility="{Binding MilitaryFieldsInspectorModel.HigherFormationFieldExists}"/>
+                                        <TextBox Grid.Row="9" Width="100" Text="{Binding SymbolAttributeSet.HigherFormation}" Visibility="{Binding MilitaryFieldsInspectorModel.HigherFormationFieldExists}"/>
+
+                                        <Label Content="Credibility" Grid.Row="10" Margin="5,5,5,5" Visibility="{Binding ElementName=credibilityComboBox, Path=Visibility}"/>
+                                        <ComboBox Name="credibilityComboBox" Grid.Row="11" Margin="5,5,5,5" ItemsSource="{Binding MilitaryFieldsInspectorModel.CredibilityDomainValues}" DisplayMemberPath="Name" SelectedValuePath="Code" SelectedValue="{Binding SymbolAttributeSet.Credibility, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150">
+                                            <ComboBox.Style>
+                                                <Style TargetType="ComboBox">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="HasItems" Value="False">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ComboBox.Style>
+                                        </ComboBox>
+
+                                        <Label Content="Reliability" Grid.Row="12" Margin="5,5,5,5" Visibility="{Binding ElementName=reliabilityComboBox, Path=Visibility}"/>
+                                        <ComboBox Name="reliabilityComboBox" Grid.Row="13" Margin="5,5,5,5" ItemsSource="{Binding MilitaryFieldsInspectorModel.ReliabilityDomainValues}" DisplayMemberPath="Name" SelectedValuePath="Code" SelectedValue="{Binding SymbolAttributeSet.Reliability, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150">
+                                            <ComboBox.Style>
+                                                <Style TargetType="ComboBox">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="HasItems" Value="False">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ComboBox.Style>
+                                        </ComboBox>
+                                    </Grid>
+                                </Grid>
+                            </ScrollViewer>
+
+                            <Grid Grid.Row="1" Grid.ColumnSpan="2">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <Button Content="&lt;-- Modify" Grid.Column="0" Style="{DynamicResource Esri_SimpleButton}" Command="{Binding GoToTabCommand}" CommandParameter="2" HorizontalAlignment="Left" Width="101"/>
+                                <Button Content="Add Favorite" Grid.Column="1" Style="{DynamicResource Esri_SimpleButton}" Command="{Binding GoToTabCommand}" CommandParameter="1" HorizontalAlignment="Center" Width="101" Visibility="Collapsed"/>
+                                <ToggleButton Content="Add to Map" Grid.Column="2" IsChecked="{Binding AddToMapToolEnabled}" Command="{Binding ActivateAddToMapToolCommand}" HorizontalAlignment="Center" Height="24" Background="White" BorderBrush="Black" BorderThickness="0.5" Width="101"/>
+                                <Button Content="Coordinates -->" Grid.Column="3" Style="{DynamicResource Esri_SimpleButton}" Command="{Binding GoToTabCommand}" CommandParameter="4" ToolTip="Esri_SimpleButton" HorizontalAlignment="Right" Width="101"/>
+                            </Grid>
+                        </Grid>
+
+                    </TabItem>
+                    <TabItem Header="Enter Coordinates" IsEnabled="{Binding IsStyleItemSelected}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid Grid.Column="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Label Content="Coordinates" Grid.Row="0"/>
+                                <AdornerDecorator Grid.Row="1">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <TextBox Width="200" Grid.Row="0" Margin="5" Text="{Binding MapPointCoordinatesString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Visibility="{Binding PointCoordinateVisibility}"/>
+                                        <DataGrid x:Name="dataGrid" Grid.Row="1" ItemsSource="{Binding PolyCoordinates, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" CanUserAddRows="True" AutoGenerateColumns="False" Height="200" Width="200" Visibility="{Binding PolyCoordinateVisibility}">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="List of Coordinates" Binding="{Binding Coordinate, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Width="*"/>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </Grid>
+                                    
+                                  </AdornerDecorator>
+
+
+                                
+                                <!--<Button Grid.Row="2" Content="Get Location from Map" Style="{DynamicResource Esri_SimpleButton}" Command="{Binding ActivateMapToolCommand}" Width="200"/>-->
+
+                                <Button Grid.Row="2" Content="Add Coordinates to Map" Style="{DynamicResource Esri_SimpleButton}" Command="{Binding AddCoordinateToMapCommand}" CommandParameter="True" Width="200"/>
+                                <!--IsEnabled="{Binding CoordinateValid}"/>-->
+
+                                <Button Content="&lt;-- Text" Grid.Row="5" Style="{DynamicResource Esri_SimpleButton}" Command="{Binding GoToTabCommand}" CommandParameter="3" HorizontalAlignment="Left" Width="101"/>
+                            </Grid>
+
+                            <Grid Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Image x:Name="mapTabSymbolImage" Source="{Binding SymbolAttributeSet.SymbolImage}" RenderOptions.BitmapScalingMode="HighQuality" Stretch="Uniform" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+
+                                <!-- All Selected Symbol Tags-->
+                                <TextBlock x:Name="mapTabSymbolTagsTextBlock" Text="{Binding SymbolAttributeSet.SelectedSymbolTags}" TextWrapping="Wrap" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+                                <ToggleButton Content="Add to Map" Grid.Row="2" IsChecked="{Binding AddToMapToolEnabled}" Command="{Binding ActivateAddToMapToolCommand}" HorizontalAlignment="Left" Height="24" Background="White" BorderBrush="Black" BorderThickness="0.5" Width="101"/>
+
+                                <Button Content="Favorites -->" Grid.Row="2" Style="{DynamicResource Esri_SimpleButton}" Command="{Binding GoToTabCommand}" CommandParameter="1" ToolTip="Esri_SimpleButton" HorizontalAlignment="Right" Width="101"/>
+
+
+                            </Grid>
+
+
+
+
+
+                        </Grid>
+                    </TabItem>
+                    
+                </TabControl>
+
+
+
+
+            </Grid>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!--<Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ComboBox x:Name="input" Text="{Binding InputCoordinate, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding InputCoordinateHistoryList}"
+                              HorizontalAlignment="Stretch" Margin="0,0,0,3" IsEditable="True">
+                        <ComboBox.Style>
+                            <Style>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HasInputError}" Value="True">
+                                        <Setter Property="TextBox.Background" Value="LightPink"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding HasInputError}" Value="False">
+                                        <Setter Property="TextBox.Background" Value="White"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ComboBox.Style>
+                    </ComboBox>
+                    <Button Grid.Column="1" ToolTip="Add" Command="{Binding AddNewOCCommand}" Margin="3,0,0,3" >
+                        <Image Source="/CoordinateToolLibrary;component/Images/hand.png" Width="18" Height="18" />
+                    </Button>
+                    <Button Grid.Column="2" ToolTip="Map Point Tool" Command="{Binding ActivatePointToolCommand}" Margin="3,0,0,3">
+                        <Image Source="/CoordinateToolLibrary;component/Images/pointtool.png" Width="18" Height="18" />
+                    </Button>
+                    <Button Grid.Column="3" ToolTip="Flash" Command="{Binding FlashPointCommand}" Margin="3,0,0,3">
+                        <Image Source="/CoordinateToolLibrary;component/Images/tip.png" Width="18" Height="18" />
+                    </Button>
+                    <Button Grid.Column="4" ToolTip="Copy All" Command="{Binding CopyAllCommand}" Margin="3,0,0,3">
+                        <Image Source="/CoordinateToolLibrary;component/Images/EditCopy32_d.png" Width="18" Height="18" />
+                    </Button>
+                </Grid>
+                <UserControl Content="{Binding CTView}" />-->
+            </DockPanel>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <!--<Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Row="0" LastChildFill="true" KeyboardNavigation.TabNavigation="Local" Height="30">
+            --><!--<TextBlock Grid.Column="1" Text="{Binding Heading}" VerticalAlignment="Center" HorizontalAlignment="Center"
+				FontSize="16" FontWeight="Light">
+                <TextBlock.ToolTip>
+                    <WrapPanel Orientation="Vertical" MaxWidth="300">
+                        <TextBlock Text="{Binding Heading}" TextWrapping="Wrap"/>
+                    </WrapPanel>
+                </TextBlock.ToolTip>
+			</TextBlock>--><!--
+        </DockPanel>-->
+        
+    </Grid>
+</UserControl>
