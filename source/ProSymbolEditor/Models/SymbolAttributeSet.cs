@@ -1,13 +1,26 @@
-﻿using ArcGIS.Desktop.Framework.Contracts;
-using MilitarySymbols;
+﻿/*******************************************************************************
+ * Copyright 2016 Esri
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ * 
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ ******************************************************************************/
+
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using ArcGIS.Core.Data;
+using ArcGIS.Desktop.Framework.Contracts;
+using MilitarySymbols;
 
 namespace ProSymbolEditor
 {
@@ -15,6 +28,7 @@ namespace ProSymbolEditor
     {
         //Base attributes
         private string _identity;
+        private DomainCodedValuePair _selectedIdentityDomainPair;
         private string _statuses;
         private string _operationalCondition;
         private string _echelon;
@@ -32,6 +46,21 @@ namespace ProSymbolEditor
         private string _selectedSymbolTags;
         private BitmapImage _symbolImage = null;
 
+        //Label Text Attributes
+        private DateTime _dateTimeValid;
+        private DateTime _dateTimeExpired;
+        private string _staffComments;
+        private string _additionalInformation;
+        private string _uniqueDesignation;
+        private string _type;
+        private string _commonidentifier;
+        private short? _speed;
+        private string _higherFormation;
+        private string _reinforced;
+        private string _credibility;
+        private string _reliability;
+        
+        #region Getters/Setters
         public string SymbolSet
         {
             get
@@ -43,6 +72,7 @@ namespace ProSymbolEditor
                 _symbolSet = value;
                 GenerateSelectedSymbolTagsString();
                 GeneratePreviewSymbol();
+                NotifyPropertyChanged(() => SymbolSet);
             }
         }
 
@@ -57,6 +87,7 @@ namespace ProSymbolEditor
                 _symbolEntity = value;
                 GenerateSelectedSymbolTagsString();
                 GeneratePreviewSymbol();
+                NotifyPropertyChanged(() => SymbolEntity);
             }
         }
 
@@ -71,6 +102,27 @@ namespace ProSymbolEditor
                 _identity = value;
                 GenerateSelectedSymbolTagsString();
                 GeneratePreviewSymbol();
+            }
+        }
+
+        public DomainCodedValuePair SelectedIdentityDomainPair
+        {
+            get
+            {
+                return _selectedIdentityDomainPair;
+            }
+            set
+            {
+                _selectedIdentityDomainPair = value;
+                if (_selectedIdentityDomainPair != null)
+                {
+                    Identity = _selectedIdentityDomainPair.Code.ToString();
+                }
+                else
+                {
+                    Identity = "";
+                }
+                NotifyPropertyChanged(() => SelectedIdentityDomainPair);
             }
         }
 
@@ -202,6 +254,180 @@ namespace ProSymbolEditor
             }
         }
 
+        //For text labels
+        public DateTime DateTimeValid
+        {
+            get
+            {
+                return _dateTimeValid;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    _dateTimeValid = DateTime.Now;
+                }
+                else
+                {
+                    _dateTimeValid = value;
+                }
+
+                NotifyPropertyChanged(() => DateTimeValid);
+            }
+        }
+
+        public DateTime DateTimeExpired
+        {
+            get
+            {
+                return _dateTimeExpired;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    _dateTimeExpired = DateTime.Now;
+                }
+                else
+                {
+                    _dateTimeExpired = value;
+                }
+                NotifyPropertyChanged(() => DateTimeExpired);
+            }
+        }
+
+        public string UniqueDesignation
+        {
+            get
+            {
+                return _uniqueDesignation;
+            }
+            set
+            {
+                _uniqueDesignation = value;
+                NotifyPropertyChanged(() => UniqueDesignation);
+            }
+        }
+
+        public string StaffComments
+        {
+            get
+            {
+                return _staffComments;
+            }
+            set
+            {
+                _staffComments = value;
+                NotifyPropertyChanged(() => StaffComments);
+            }
+        }
+
+        public string AdditionalInformation
+        {
+            get
+            {
+                return _additionalInformation;
+            }
+            set
+            {
+                _additionalInformation = value;
+                NotifyPropertyChanged(() => AdditionalInformation);
+            }
+        }
+
+        public string Type
+        {
+            get
+            {
+                return _type;
+            }
+            set
+            {
+                _type = value;
+                NotifyPropertyChanged(() => Type);
+            }
+        }
+
+        public string CommonIdentifier
+        {
+            get
+            {
+                return _commonidentifier;
+            }
+            set
+            {
+                _commonidentifier = value;
+                NotifyPropertyChanged(() => CommonIdentifier);
+            }
+        }
+
+        public short? Speed
+        {
+            get
+            {
+                return _speed;
+            }
+            set
+            {
+                _speed = value;
+                NotifyPropertyChanged(() => Speed);
+            }
+        }
+
+        public string HigherFormation
+        {
+            get
+            {
+                return _higherFormation;
+            }
+            set
+            {
+                _higherFormation = value;
+                NotifyPropertyChanged(() => HigherFormation);
+            }
+        }
+
+        public string Reinforced
+        {
+            get
+            {
+                return _reinforced;
+            }
+            set
+            {
+                _reinforced = value;
+                //NotifyPropertyChanged(() => Reinforced);
+            }
+        }
+
+        public string Credibility
+        {
+            get
+            {
+                return _credibility;
+            }
+            set
+            {
+                _credibility = value;
+                //NotifyPropertyChanged(() => Credibility);
+            }
+        }
+
+        public string Reliability
+        {
+            get
+            {
+                return _reliability;
+            }
+            set
+            {
+                _reliability = value;
+                //NotifyPropertyChanged(() => Reliability);
+            }
+        }
+
+        #endregion
+
         private void GeneratePreviewSymbol()
         {
             // Step 1: Create a dictionary/map of well known attribute names to values
@@ -242,6 +468,8 @@ namespace ProSymbolEditor
             if (!success || (exportBitmap == null))
             {
                 Console.WriteLine("Export failed!");
+                _symbolImage = null;
+                NotifyPropertyChanged(() => SymbolImage);
                 return;
             }
         }
@@ -314,6 +542,133 @@ namespace ProSymbolEditor
             return attributeSet;
         }
 
+        public void PopulateRowBufferWithAttributes(ref RowBuffer rowBuffer)
+        {
+            if (!string.IsNullOrEmpty(_identity))
+            {
+                rowBuffer["identity"] = _identity;
+            }
+
+            if (!string.IsNullOrEmpty(_symbolSet))
+            {
+                rowBuffer["symbolset"] = Convert.ToInt32(_symbolSet);
+            }
+
+            if (!string.IsNullOrEmpty(_symbolEntity))
+            {
+                rowBuffer["symbolentity"] = Convert.ToInt32(_symbolEntity);
+            }
+
+            //Indicator / HQTFFD /
+
+            if (!string.IsNullOrEmpty(_indicator))
+            {
+                rowBuffer["indicator"] = _indicator;
+            }
+
+            //Echelon or Mobility
+
+            if (!string.IsNullOrEmpty(_echelon))
+            {
+                rowBuffer["echelon"] = _echelon;
+            }
+
+            if (!string.IsNullOrEmpty(_mobility))
+            {
+                rowBuffer["mobility"] = _mobility;
+            }
+
+            //Statuses or Operation
+
+            if (!string.IsNullOrEmpty(_operationalCondition))
+            {
+                rowBuffer["operationalcondition"] = _operationalCondition;
+            }
+
+            if (!string.IsNullOrEmpty(_statuses))
+            {
+                rowBuffer["status"] = _statuses;
+            }
+
+            //Delta attributes
+            if (!string.IsNullOrEmpty(_context))
+            {
+                rowBuffer["context"] = _context;
+            }
+
+            if (!string.IsNullOrEmpty(_modifier1))
+            {
+                rowBuffer["modifier1"] = _modifier1;
+            }
+
+            if (!string.IsNullOrEmpty(_modifier2))
+            {
+                rowBuffer["modifier2"] = _modifier2;
+            }
+
+            //LABELS
+            if (DateTimeValid != null)
+            {
+                rowBuffer["datetimevalid"] = DateTimeValid.ToString();
+            }
+
+            if (DateTimeExpired != null)
+            {
+                rowBuffer["datetimeexpired"] = DateTimeExpired.ToString();
+            }
+            
+            if (!string.IsNullOrEmpty(UniqueDesignation))
+            {
+                rowBuffer["uniquedesignation"] = UniqueDesignation;
+            }
+
+            if (!string.IsNullOrEmpty(StaffComments))
+            {
+                rowBuffer["staffcomment"] = StaffComments;
+            }
+
+            if (!string.IsNullOrEmpty(AdditionalInformation))
+            {
+                rowBuffer["additionalinformation"] = AdditionalInformation;
+            }
+
+            if (!string.IsNullOrEmpty(Type))
+            {
+                rowBuffer["type"] = Type;
+            }
+
+            if (!string.IsNullOrEmpty(CommonIdentifier))
+            {
+                rowBuffer["commonidentifier"] = CommonIdentifier;
+            }
+
+            if (Speed != null)
+            {
+                //Short
+                rowBuffer["speed"] = Speed;
+            }
+
+            if (!string.IsNullOrEmpty(HigherFormation))
+            {
+                rowBuffer["higherFormation"] = HigherFormation;
+            }
+
+            if (!string.IsNullOrEmpty(Reinforced))
+            {
+                rowBuffer["reinforced"] = Reinforced;
+            }
+
+            if (!string.IsNullOrEmpty(Credibility))
+            {
+                rowBuffer["credibility"] = Credibility;
+            }
+
+            if (!string.IsNullOrEmpty(Reliability))
+            {
+                rowBuffer["reliability"] = Reliability;
+            }
+        }
+
         private void GenerateSelectedSymbolTagsString()
         {
             string statusOperation = "";
@@ -331,8 +686,35 @@ namespace ProSymbolEditor
                 ", Echelon = " + _echelon + ", Context = " + _context + ", Modifier 1 = " + _modifier1 + ", Modifier 2 = " + _modifier2;
             NotifyPropertyChanged(() => SelectedSymbolTags);
         }
+        
+        public void ResetAttributes()
+        {
+            //Reset attributes
+            SymbolSet = "";
+            SymbolEntity = "";
+            Echelon = "";
+            Identity = "";
+            OperationalCondition = "";
+            Statuses = "";
+            Mobility = "";
+            Indicator = "";
+            Context = "";
+            Modifier1 = "";
+            Modifier2 = "";
 
-
-
+            //Reset label text attributes
+            DateTimeValid = DateTime.Now;
+            DateTimeExpired = DateTime.Now;
+            UniqueDesignation = "";
+            StaffComments = "";
+            AdditionalInformation = "";
+            Type = "";
+            CommonIdentifier = "";
+            Speed = null;
+            HigherFormation = "";
+            Reinforced = "";
+            Credibility = null;
+            Reliability = "";
+        }
     }
 }

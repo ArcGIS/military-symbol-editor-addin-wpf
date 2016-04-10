@@ -14,35 +14,36 @@
  *   limitations under the License.
  ******************************************************************************/
 
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
+using System;
+using System.Windows.Data;
 
 namespace ProSymbolEditor
 {
     /// <summary>
-    /// Interaction logic for MilitarySymbolDockpaneView.xaml
+    /// Not currently used.  Was used to get the character in a position in a string from XAML.  Might be used in the future for SIDC.
     /// </summary>
-    public partial class MilitarySymbolDockpaneView : UserControl
+    public class StringCharacterValueConverter : IValueConverter
     {
-        public MilitarySymbolDockpaneView()
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            InitializeComponent();
+            if (value == null)
+            {
+                return value;
+            }
+
+            string s = value.ToString();
+            int characterPosition;
+            if (!int.TryParse(parameter.ToString(), out characterPosition) ||
+                s.Length <= characterPosition)
+            {
+                return s;
+            }
+            return s[characterPosition];
         }
 
-        private void SearchUniformGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            var grid = sender as UniformGrid;
-            if (grid.ActualWidth > 1000)
-            {
-                grid.Columns = 2;
-                grid.Rows = 1;
-            }
-            else
-            {
-                grid.Columns = 1;
-                grid.Rows = 2;
-            }
+            throw new NotSupportedException();
         }
     }
 }

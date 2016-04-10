@@ -1,60 +1,37 @@
-﻿using ArcGIS.Core.CIM;
+﻿/*******************************************************************************
+ * Copyright 2016 Esri
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ * 
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ ******************************************************************************/
+
+using ArcGIS.Core.Geometry;
 using ArcGIS.Desktop.Mapping;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProSymbolEditor
 {
     public class SymbolSetMapping
     {
-        private string _featureClassName;
-        private StyleItemType _styleItemType;
-        private string _symbolSet;
+        public string FeatureClassName { get; set; }
+        public GeometryType GeometryType { get; set; }
+        public string SymbolSet { get; set; }
 
-        public SymbolSetMapping(string featureClassName, StyleItemType styleItemType, string symbolSet)
+        public SymbolSetMapping(string featureClassName, GeometryType geometryType, string symbolSet)
         {
-            _featureClassName = featureClassName;
-            _styleItemType = styleItemType;
-            _symbolSet = symbolSet;
+            FeatureClassName = featureClassName;
+            GeometryType = geometryType;
+            SymbolSet = symbolSet;
         }
 
-        public string FeatureClassName
-        {
-            get
-            {
-                return _featureClassName;
-            }
-            set
-            {
-                _featureClassName = value;
-            }
-        }
 
-        public StyleItemType StyleItemType
-        {
-            get
-            {
-                return _styleItemType;
-            }
-            set
-            {
-                _styleItemType = value;
-            }
-        }
-
-        public string SymbolSet
-        {
-            get
-            {
-                return _symbolSet;
-            }
-            set
-            {
-                _symbolSet = value;
-            }
-        }
     }
 }

@@ -38,6 +38,10 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CoordinateToolLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dependencies\Coordinate Library\CoordinateToolLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="MilitarySymbols">
       <HintPath>Dependencies\MilitarySymbols\debug\MilitarySymbols.dll</HintPath>
     </Reference>
@@ -82,6 +86,10 @@
       <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\DesktopExtensions\ArcGIS.Desktop.Extensions.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dependencies\Extended WPF Toolkit Binaries\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <AddInContent Include="Config.daml" />
@@ -89,10 +97,15 @@
     <AddInContent Include="Images\AddInDesktop32.png" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\StringCharacterValueConverter.cs" />
+    <Compile Include="Map Tools\CoordinateMapTool.cs" />
+    <Compile Include="Map Tools\DrawFeatureSketchTool.cs" />
+    <Compile Include="Models\CoordinateObject.cs" />
     <Compile Include="Models\DomainCodedValuePair.cs" />
     <Compile Include="Models\SymbolAttributeSet.cs" />
     <Compile Include="Models\SymbolSetMapping.cs" />
     <Compile Include="Models\SymbolSetMappings.cs" />
+    <Compile Include="Models\MilitaryFieldsInspectorModel.cs" />
     <Compile Include="Views\MilitarySymbolDockpane.xaml.cs">
       <DependentUpon>MilitarySymbolDockpane.xaml</DependentUpon>
     </Compile>
@@ -114,6 +127,14 @@
     <AddInContent Include="Images\GenericButtonPurple32.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Dependencies\Coordinate Library\CoordinateToolLibrary.dll" />
+    <Content Include="Dependencies\Extended WPF Toolkit Binaries\Xceed.Wpf.Toolkit.dll" />
+    <Content Include="Dependencies\MilitarySymbols\MilitarySymbols.dll" />
+    <Content Include="Dependencies\MilitarySymbols\Svg.dll" />
+    <AddInContent Include="Images\GenericButtonRed16.png" />
+    <AddInContent Include="Images\GenericButtonRed32.png" />
+    <AddInContent Include="Images\MIL-16x16.png" />
+    <AddInContent Include="Images\MIL-32x32.png" />
     <Content Include="Images\MIL_STD_2525D_Symbols\Amplifier\131.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -11497,6 +11518,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <UsingTask AssemblyFile="C:\Program Files\ArcGIS\Pro\bin\proapp-sdk-MSBuild.dll" TaskName="proapp_sdk_MSBuild.PackageAddIn" />
   <UsingTask AssemblyFile="C:\Program Files\ArcGIS\Pro\bin\proapp-sdk-MSBuild.dll" TaskName="proapp_sdk_MSBuild.CleanAddIn" />
