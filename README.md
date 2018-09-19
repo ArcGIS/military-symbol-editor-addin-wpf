@@ -26,12 +26,12 @@ A user-focused [ArcGIS Pro](http://pro.arcgis.com) add-in for quickly creating m
 ### Developers
 
 * Visual Studio 2015
-* ArcGIS Pro 2.0+
-* ArcGIS Pro 2.0+ SDK
+* ArcGIS Pro 2.1+
+* ArcGIS Pro 2.1+ SDK
 
 ### Users
 
-* ArcGIS Pro 2.0+
+* ArcGIS Pro 2.1+
 
 ## Instructions
 
