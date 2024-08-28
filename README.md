@@ -1,6 +1,8 @@
 # Military Symbology
-___Beginning at ArcGIS Pro 2.6 this functionality is installed with ArcGIS Pro. Only the utilities to create/update the datamodel used by the Dictionary Renderer will continue to be maintained in this repository.___
 
+## *This repository is no longer maintained.* 
+
+___Beginning at ArcGIS Pro 2.6 this functionality is installed with ArcGIS Pro.___
 
 ## Military Symbol Editor add-in
 
